@@ -1,14 +1,34 @@
 import { useState, useEffect } from 'react'
 import type { User } from '../types'
+import { fetchLeaderboard } from '../utils/api'
 import { getUsers, recalculateAllScores } from '../utils/storage'
 
 export default function LeaderboardPage() {
   const [users, setUsers] = useState<User[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    recalculateAllScores()
-    const list = getUsers().sort((a, b) => b.points - a.points)
-    setUsers(list)
+    let cancelled = false
+
+    async function load() {
+      setLoading(true)
+      try {
+        const list = await fetchLeaderboard()
+        if (!cancelled) setUsers(list)
+      } catch {
+        if (!cancelled) {
+          recalculateAllScores()
+          setUsers(getUsers().sort((a, b) => b.points - a.points))
+        }
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+
+    load()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   return (
@@ -20,7 +40,11 @@ export default function LeaderboardPage() {
         </p>
       </div>
 
-      {users.length === 0 ? (
+      {loading ? (
+        <div className="card empty">
+          <p>Nalagam...</p>
+        </div>
+      ) : users.length === 0 ? (
         <div className="card empty">
           <p>Še ni rezultatov. Riši in glasuj, da prideš na lestvico!</p>
         </div>
@@ -50,62 +74,20 @@ export default function LeaderboardPage() {
       )}
 
       <style>{`
-        .lb-header {
-          margin-bottom: 1.75rem;
-        }
-        .lb-header h2 {
-          font-size: 1.6rem;
-          margin-bottom: 0.35rem;
-        }
-        .subtitle {
-          color: #64748b;
-          max-width: 520px;
-        }
-        .lb-card {
-          padding: 0;
-          overflow: hidden;
-        }
-        .lb-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-        .lb-table th {
-          text-align: left;
-          padding: 1rem 1.25rem;
-          background: #f8fafc;
-          color: #64748b;
-          font-size: 0.85rem;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.03em;
-        }
-        .lb-table td {
-          padding: 1rem 1.25rem;
-          border-top: 1px solid #f1f5f9;
-        }
-        .rank {
-          font-size: 1.25rem;
-          width: 60px;
-          text-align: center;
-        }
-        .name {
-          font-weight: 600;
-          font-size: 1.05rem;
-        }
-        .points {
-          font-weight: 800;
-          font-size: 1.15rem;
-          color: #4361ee;
-          text-align: right;
-        }
+        .lb-header { margin-bottom: 1.75rem; }
+        .lb-header h2 { font-size: 1.6rem; margin-bottom: 0.35rem; }
+        .subtitle { color: #64748b; max-width: 520px; }
+        .lb-card { padding: 0; overflow: hidden; }
+        .lb-table { width: 100%; border-collapse: collapse; }
+        .lb-table th { text-align: left; padding: 1rem 1.25rem; background: #f8fafc; color: #64748b; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+        .lb-table td { padding: 1rem 1.25rem; border-top: 1px solid #f1f5f9; }
+        .rank { font-size: 1.25rem; width: 60px; text-align: center; }
+        .name { font-weight: 600; font-size: 1.05rem; }
+        .points { font-weight: 800; font-size: 1.15rem; color: #4361ee; text-align: right; }
         .top-1 .name { color: #b45309; }
         .top-2 .name { color: #64748b; }
         .top-3 .name { color: #92400e; }
-        .empty {
-          text-align: center;
-          padding: 3rem;
-          color: #64748b;
-        }
+        .empty { text-align: center; padding: 3rem; color: #64748b; }
       `}</style>
     </div>
   )
