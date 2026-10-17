@@ -13,7 +13,6 @@ export default function DrawingCanvas({ onSave, disabled, timeLimitSeconds = DRA
   const [isDrawing, setIsDrawing] = useState(false)
   const [color, setColor] = useState('#1a1a2e')
   const [brushSize, setBrushSize] = useState(6)
-  const [hasDrawn, setHasDrawn] = useState(false)
   const [secondsLeft, setSecondsLeft] = useState(timeLimitSeconds)
   const [timerActive, setTimerActive] = useState(true)
   const submittedRef = useRef(false)
@@ -82,7 +81,6 @@ export default function DrawingCanvas({ onSave, disabled, timeLimitSeconds = DRA
     ctx.beginPath()
     ctx.moveTo(pos.x, pos.y)
     setIsDrawing(true)
-    setHasDrawn(true)
   }
 
   const draw = (e: React.MouseEvent | React.TouchEvent) => {
@@ -108,7 +106,6 @@ export default function DrawingCanvas({ onSave, disabled, timeLimitSeconds = DRA
     if (!ctx) return
     ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-    setHasDrawn(false)
   }
 
   const formatTime = (s: number) => {
