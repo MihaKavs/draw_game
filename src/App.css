@@ -1,0 +1,101 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+}
+
+.logo {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+}
+
+.nav {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.nav-link {
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #64748b;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.nav-link:hover {
+  background: #f1f5f9;
+  color: #1a1a2e;
+  text-decoration: none;
+}
+
+.nav-link.active {
+  background: #4361ee;
+  color: white;
+}
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #334155;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+.main {
+  flex: 1;
+  padding: 1.5rem 0 3rem;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .header-inner {
+    flex-wrap: wrap;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  .user-area {
+    margin-left: auto;
+  }
+}
